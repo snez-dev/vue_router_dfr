@@ -7,6 +7,7 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Transitions */
@@ -40,4 +41,306 @@ body {
   font-weight: 600;
   background: rgba(255, 255, 255, 0.15);
   border-radius: 6px;
+}
+
+/* ==================== THEME VARIABLES ==================== */
+
+/* Light theme */
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --border-color: #dee2e6;
+  --card-bg: #ffffff;
+  --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+  --bg-primary: #212529;
+  --bg-secondary: #343a40;
+  --text-primary: #f8f9fa;
+  --text-secondary: #adb5bd;
+  --border-color: #495057;
+  --card-bg: #2c3034;
+  --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Apply theme variables */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.card {
+  background-color: var(--card-bg);
+  box-shadow: var(--card-shadow);
+}
+
+/* ==================== COLOR SCHEMES ==================== */
+
+/* Primary (Blue) */
+[data-color-scheme="primary"] .navbar {
+  background-color: #0d6efd !important;
+}
+
+[data-color-scheme="primary"] .btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+[data-color-scheme="primary"] .text-primary {
+  color: #0d6efd !important;
+}
+
+/* Success (Green) */
+[data-color-scheme="success"] .navbar {
+  background-color: #198754 !important;
+}
+
+[data-color-scheme="success"] .btn-primary {
+  background-color: #198754;
+  border-color: #198754;
+}
+
+[data-color-scheme="success"] .text-primary {
+  color: #198754 !important;
+}
+
+/* Danger (Red) */
+[data-color-scheme="danger"] .navbar {
+  background-color: #dc3545 !important;
+}
+
+[data-color-scheme="danger"] .btn-primary {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+[data-color-scheme="danger"] .text-primary {
+  color: #dc3545 !important;
+}
+
+/* Warning (Yellow) */
+[data-color-scheme="warning"] .navbar {
+  background-color: #ffc107 !important;
+}
+
+[data-color-scheme="warning"] .btn-primary {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #000;
+}
+
+[data-color-scheme="warning"] .text-primary {
+  color: #ffc107 !important;
+}
+
+/* Purple */
+[data-color-scheme="purple"] .navbar {
+  background-color: #6f42c1 !important;
+}
+
+[data-color-scheme="purple"] .btn-primary {
+  background-color: #6f42c1;
+  border-color: #6f42c1;
+}
+
+[data-color-scheme="purple"] .text-primary {
+  color: #6f42c1 !important;
+}
+
+/* Teal */
+[data-color-scheme="teal"] .navbar {
+  background-color: #20c997 !important;
+}
+
+[data-color-scheme="teal"] .btn-primary {
+  background-color: #20c997;
+  border-color: #20c997;
+}
+
+[data-color-scheme="teal"] .text-primary {
+  color: #20c997 !important;
+}
+
+/* ==================== THEME SWITCHER ==================== */
+
+.theme-switcher {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1050;
+}
+
+.theme-switcher-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  background: var(--card-bg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.theme-switcher-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.theme-switcher-panel {
+  position: absolute;
+  bottom: 60px;
+  right: 0;
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  min-width: 280px;
+  display: none;
+}
+
+.theme-switcher-panel.show {
+  display: block;
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-bottom: 4px;
+}
+
+.theme-option:hover {
+  background-color: var(--bg-secondary);
+}
+
+.theme-option.active {
+  background-color: var(--bg-secondary);
+  font-weight: 600;
+}
+
+.color-scheme-option {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  margin: 4px;
+  border: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.color-scheme-option:hover {
+  transform: scale(1.1);
+}
+
+.color-scheme-option.active {
+  border-color: var(--text-primary);
+}
+
+/* ==================== LOGIN PAGE BACKGROUND ==================== */
+
+.login-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transition: background 0.3s ease;
+}
+
+[data-theme="dark"] .login-bg {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+/* ==================== DARK THEME OVERRIDES ==================== */
+
+[data-theme="dark"] .card {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .card-header {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .table {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .table-light {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .form-control {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .form-control:focus {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .input-group-text {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .dropdown-menu {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .dropdown-item {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .dropdown-item:hover {
+  background-color: var(--bg-secondary);
+}
+
+[data-theme="dark"] .alert-info {
+  background-color: rgba(13, 202, 240, 0.1);
+  border-color: rgba(13, 202, 240, 0.2);
+  color: #6edff6;
+}
+
+[data-theme="dark"] .bg-white {
+  background-color: var(--card-bg) !important;
+}
+
+[data-theme="dark"] .border-bottom {
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .list-group-item {
+  background-color: transparent;
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .text-muted {
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .bg-light {
+  background-color: var(--bg-secondary) !important;
+}
+
+[data-theme="dark"] hr {
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .progress {
+  background-color: var(--bg-secondary);
 }

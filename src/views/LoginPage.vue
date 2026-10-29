@@ -1,5 +1,5 @@
 <template>
-  <div class="min-vh-100 d-flex align-items-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+  <div class="min-vh-100 d-flex align-items-center login-bg">
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-md-5 col-lg-4">

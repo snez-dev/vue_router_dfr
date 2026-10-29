@@ -51,14 +51,21 @@
         <component :is="Component" />
       </transition>
     </router-view>
+
+    <!-- Theme Switcher -->
+    <ThemeSwitcher />
   </div>
 </template>
 
 <script>
 import { useStore } from './store';
+import ThemeSwitcher from './components/ThemeSwitcher.vue';
 
 export default {
   name: 'App',
+  components: {
+    ThemeSwitcher
+  },
   data() {
     return {
       dropdownOpen: false

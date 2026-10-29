@@ -135,6 +135,51 @@ export const useStore = () => ({
 });
 ```
 
+## 🎨 Система тем и оформления
+
+### Темы
+- **Светлая** — классическая светлая тема
+- **Тёмная** — тёмная тема для комфортной работы ночью
+- **Автоматически** — следует системным настройкам ОС
+
+### Цветовые схемы
+- **Синий** (primary) — стандартная схема Bootstrap
+- **Зелёный** (success) — природная, успокаивающая
+- **Красный** (danger) — яркая, привлекающая внимание
+- **Жёлтый** (warning) — тёплая, энергичная
+- **Фиолетовый** (purple) — креативная, современная
+- **Бирюзовый** (teal) — свежая, технологичная
+
+### Использование
+
+Переключатель темы находится в правом нижнем углу экрана (плавающая кнопка).
+
+#### Программное управление темой
+```javascript
+import { useThemeStore } from './store/theme';
+
+const themeStore = useThemeStore();
+
+// Установить тему
+themeStore.actions.setTheme('dark'); // 'light' | 'dark' | 'auto'
+
+// Установить цветовую схему
+themeStore.actions.setColorScheme('purple'); // 'primary' | 'success' | 'danger' | 'warning' | 'purple' | 'teal'
+
+// Получить текущую тему
+const currentTheme = themeStore.getters.currentTheme.value;
+```
+
+#### CSS переменные
+```css
+/* Используйте в своих компонентах */
+.my-component {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+```
+
 ## 🎯 Django DRF Backend (рекомендуемая структура)
 
 ### Модели
