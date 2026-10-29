@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary" v-if="isAuthenticated">
+    <nav class="navbar navbar-expand-lg navbar-dark" :class="navbarColorClass" v-if="isAuthenticated">
       <div class="container-fluid">
         <router-link class="navbar-brand fw-bold" to="/">
           <i class="fas fa-shield-alt me-2"></i>Vue Access
@@ -59,6 +59,7 @@
 
 <script>
 import { useStore } from './store';
+import { useThemeStore } from './store/theme';
 import ThemeSwitcher from './components/ThemeSwitcher.vue';
 
 export default {
@@ -79,6 +80,10 @@ export default {
     currentUser() {
       const store = useStore();
       return store.getters.currentUser.value || {};
+    },
+    navbarColorClass() {
+      const themeStore = useThemeStore();
+      return `bg-${themeStore.getters.colorScheme.value}`;
     }
   },
   methods: {

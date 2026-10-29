@@ -6,7 +6,7 @@
 
 - **Frontend:** Vue.js 3 + Vue Router 4
 - **State Management:** Собственный store (reactive + computed)
-- **CSS Framework:** Bootstrap 5.3
+- **CSS Framework:** Bootstrap 5.3 (с встроенной поддержкой тем через data-bs-theme)
 - **Icons:** Font Awesome 6
 - **Build Tool:** Vite
 - **Backend:** Django REST Framework (имитация через mock API)
@@ -137,18 +137,18 @@ export const useStore = () => ({
 
 ## 🎨 Система тем и оформления
 
-### Темы
+### Темы (Bootstrap data-bs-theme)
 - **Светлая** — классическая светлая тема
 - **Тёмная** — тёмная тема для комфортной работы ночью
 - **Автоматически** — следует системным настройкам ОС
 
-### Цветовые схемы
+### Цветовые схемы (Bootstrap color classes)
 - **Синий** (primary) — стандартная схема Bootstrap
 - **Зелёный** (success) — природная, успокаивающая
 - **Красный** (danger) — яркая, привлекающая внимание
 - **Жёлтый** (warning) — тёплая, энергичная
-- **Фиолетовый** (purple) — креативная, современная
-- **Бирюзовый** (teal) — свежая, технологичная
+- **Голубой** (info) — свежая, технологичная
+- **Тёмный** (dark) — строгая, профессиональная
 
 ### Использование
 
@@ -164,20 +164,19 @@ const themeStore = useThemeStore();
 themeStore.actions.setTheme('dark'); // 'light' | 'dark' | 'auto'
 
 // Установить цветовую схему
-themeStore.actions.setColorScheme('purple'); // 'primary' | 'success' | 'danger' | 'warning' | 'purple' | 'teal'
+themeStore.actions.setColorScheme('info'); // 'primary' | 'success' | 'danger' | 'warning' | 'info' | 'dark'
 
 // Получить текущую тему
 const currentTheme = themeStore.getters.currentTheme.value;
 ```
 
-#### CSS переменные
-```css
-/* Используйте в своих компонентах */
-.my-component {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
-}
+#### Bootstrap классы
+```vue
+<!-- Используйте Bootstrap классы в компонентах -->
+<div class="card bg-body text-body">
+  <h5 class="text-primary">Заголовок</h5>
+  <p class="text-body-secondary">Текст</p>
+</div>
 ```
 
 ## 🎯 Django DRF Backend (рекомендуемая структура)

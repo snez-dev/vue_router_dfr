@@ -3,7 +3,7 @@ import { reactive, computed } from 'vue';
 // Состояние темы
 const state = reactive({
   theme: localStorage.getItem('app_theme') || 'light', // light, dark, auto
-  colorScheme: localStorage.getItem('app_color_scheme') || 'primary', // primary, success, danger, warning, purple, teal
+  colorScheme: localStorage.getItem('app_color_scheme') || 'primary', // primary, success, danger, warning, info, dark
 });
 
 // Геттеры
@@ -34,12 +34,19 @@ const actions = {
     const html = document.documentElement;
     const currentTheme = getters.currentTheme.value;
     
-    // Применяем тему
+    // Применяем Bootstrap тему через data-bs-theme
     html.setAttribute('data-bs-theme', currentTheme);
-    html.setAttribute('data-theme', currentTheme);
     
-    // Применяем цветовую схему
-    html.setAttribute('data-color-scheme', state.colorScheme);
+    // Применяем цветовую схему к navbar
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+      // Убираем все Bootstrap цветовые классы
+      const colorClasses = ['bg-primary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-dark', 'bg-secondary'];
+      colorClasses.forEach(cls => navbar.classList.remove(cls));
+      
+      // Добавляем выбранный цвет
+      navbar.classList.add(`bg-${state.colorScheme}`);
+    }
   },
   init() {
     // Применяем тему при инициализации

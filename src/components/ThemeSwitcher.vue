@@ -1,42 +1,65 @@
 <template>
   <div class="theme-switcher">
-    <button class="theme-switcher-btn" @click="togglePanel">
-      <i :class="themeIcon" class="fs-4"></i>
+    <button class="btn btn-primary rounded-circle shadow-lg theme-switcher-btn" @click="togglePanel">
+      <i :class="themeIcon"></i>
     </button>
     
-    <div class="theme-switcher-panel" :class="{ show: panelOpen }">
-      <h6 class="mb-3"><i class="fas fa-palette me-2"></i>Тема оформления</h6>
-      
-      <!-- Theme selection -->
-      <div class="mb-3">
-        <small class="text-muted d-block mb-2">Режим</small>
-        <div class="theme-option" :class="{ active: theme === 'light' }" @click="setTheme('light')">
-          <i class="fas fa-sun me-2 text-warning"></i>
-          <span>Светлая</span>
+    <div class="card shadow-lg theme-switcher-panel" :class="{ show: panelOpen }">
+      <div class="card-body p-3">
+        <h6 class="card-title mb-3">
+          <i class="fas fa-palette me-2"></i>Оформление
+        </h6>
+        
+        <!-- Theme selection -->
+        <div class="mb-3">
+          <small class="text-muted d-block mb-2">Тема</small>
+          <div class="btn-group w-100" role="group">
+            <button 
+              type="button" 
+              class="btn btn-sm"
+              :class="theme === 'light' ? 'btn-primary' : 'btn-outline-secondary'"
+              @click="setTheme('light')"
+            >
+              <i class="fas fa-sun me-1"></i>Светлая
+            </button>
+            <button 
+              type="button" 
+              class="btn btn-sm"
+              :class="theme === 'dark' ? 'btn-primary' : 'btn-outline-secondary'"
+              @click="setTheme('dark')"
+            >
+              <i class="fas fa-moon me-1"></i>Тёмная
+            </button>
+            <button 
+              type="button" 
+              class="btn btn-sm"
+              :class="theme === 'auto' ? 'btn-primary' : 'btn-outline-secondary'"
+              @click="setTheme('auto')"
+            >
+              <i class="fas fa-desktop me-1"></i>Авто
+            </button>
+          </div>
         </div>
-        <div class="theme-option" :class="{ active: theme === 'dark' }" @click="setTheme('dark')">
-          <i class="fas fa-moon me-2 text-info"></i>
-          <span>Тёмная</span>
-        </div>
-        <div class="theme-option" :class="{ active: theme === 'auto' }" @click="setTheme('auto')">
-          <i class="fas fa-desktop me-2 text-secondary"></i>
-          <span>Автоматически</span>
-        </div>
-      </div>
-      
-      <!-- Color scheme selection -->
-      <div>
-        <small class="text-muted d-block mb-2">Цветовая схема</small>
-        <div class="d-flex flex-wrap">
-          <div 
-            v-for="scheme in colorSchemes" 
-            :key="scheme.value"
-            class="color-scheme-option"
-            :class="{ active: colorScheme === scheme.value }"
-            :style="{ backgroundColor: scheme.color }"
-            :title="scheme.label"
-            @click="setColorScheme(scheme.value)"
-          ></div>
+        
+        <!-- Color scheme selection -->
+        <div>
+          <small class="text-muted d-block mb-2">Цвет</small>
+          <div class="d-flex flex-wrap gap-2">
+            <button 
+              v-for="scheme in colorSchemes" 
+              :key="scheme.value"
+              class="btn btn-sm rounded-circle color-btn"
+              :class="[
+                `bg-${scheme.value}`,
+                colorScheme === scheme.value ? 'border border-3 border-dark shadow' : ''
+              ]"
+              :title="scheme.label"
+              @click="setColorScheme(scheme.value)"
+              style="width: 32px; height: 32px; padding: 0;"
+            >
+              <i v-if="colorScheme === scheme.value" class="fas fa-check text-white"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -52,12 +75,12 @@ export default {
     return {
       panelOpen: false,
       colorSchemes: [
-        { value: 'primary', color: '#0d6efd', label: 'Синий' },
-        { value: 'success', color: '#198754', label: 'Зелёный' },
-        { value: 'danger', color: '#dc3545', label: 'Красный' },
-        { value: 'warning', color: '#ffc107', label: 'Жёлтый' },
-        { value: 'purple', color: '#6f42c1', label: 'Фиолетовый' },
-        { value: 'teal', color: '#20c997', label: 'Бирюзовый' },
+        { value: 'primary', label: 'Синий' },
+        { value: 'success', label: 'Зелёный' },
+        { value: 'danger', label: 'Красный' },
+        { value: 'warning', label: 'Жёлтый' },
+        { value: 'info', label: 'Голубой' },
+        { value: 'dark', label: 'Тёмный' },
       ]
     };
   },
