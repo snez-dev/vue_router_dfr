@@ -31,13 +31,13 @@
             </li>
           </ul>
           <ul class="navbar-nav">
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+            <li class="nav-item dropdown" ref="dropdownRef">
+              <a class="nav-link dropdown-toggle" href="#" role="button" @click.prevent="toggleDropdown">
                 <i class="fas fa-user-circle me-1"></i>{{ currentUser.username }}
                 <span class="badge bg-light text-primary ms-1">{{ currentUser.role }}</span>
               </a>
-              <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="#" @click.prevent="logout"><i class="fas fa-sign-out-alt me-2"></i>Выход</a></li>
+              <ul class="dropdown-menu dropdown-menu-end" :class="{ show: dropdownOpen }">
+                <li><button type="button" class="dropdown-item" @click="logout"><i class="fas fa-sign-out-alt me-2"></i>Выход</button></li>
               </ul>
             </li>
           </ul>
@@ -59,6 +59,11 @@ import { useStore } from './store';
 
 export default {
   name: 'App',
+  data() {
+    return {
+      dropdownOpen: false
+    };
+  },
   computed: {
     isAuthenticated() {
       const store = useStore();
@@ -70,11 +75,26 @@ export default {
     }
   },
   methods: {
+    toggleDropdown() {
+      this.dropdownOpen = !this.dropdownOpen;
+    },
     logout() {
       const store = useStore();
       store.actions.logout();
+      this.dropdownOpen = false;
       this.$router.push('/login');
+    },
+    closeDropdown(event) {
+      if (this.$refs.dropdownRef && !this.$refs.dropdownRef.contains(event.target)) {
+        this.dropdownOpen = false;
+      }
     }
+  },
+  mounted() {
+    document.addEventListener('click', this.closeDropdown);
+  },
+  beforeUnmount() {
+    document.removeEventListener('click', this.closeDropdown);
   }
 }
 </script>

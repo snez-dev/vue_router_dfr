@@ -1,25 +1,25 @@
 # Vue.js SPA — Система управления доступом
 
-Полноценное SPA-приложение на Vue.js 3 с .vue компонентами (Single File Components).
+Полноценное SPA-приложение на Vue.js 3 с Single File Components (.vue).
 
 ## 🚀 Технологии
 
 - **Frontend:** Vue.js 3 + Vue Router 4
-- **State Management:** Собственный store (без Pinia)
+- **State Management:** Собственный store (reactive + computed)
 - **CSS Framework:** Bootstrap 5.3
 - **Icons:** Font Awesome 6
-- **Backend:** Django REST Framework (имитация)
 - **Build Tool:** Vite
+- **Backend:** Django REST Framework (имитация через mock API)
 
 ## 📁 Структура проекта
 
 ```
 ├── index.html                    # Точка входа
-├── vite.config.js                # Конфигурация Vite
+├── vite.config.js                # Конфигурация Vite + Vue
 ├── package.json                  # Зависимости
 ├── src/
 │   ├── main.js                   # Инициализация Vue приложения
-│   ├── App.vue                   # Корневой компонент
+│   ├── App.vue                   # Корневой компонент (navbar + router-view)
 │   ├── assets/
 │   │   └── styles.css            # Глобальные стили
 │   ├── store/
