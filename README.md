@@ -135,6 +135,113 @@ export const useStore = () => ({
 });
 ```
 
+## 🛣️ Vue Router — примеры
+
+### Динамические параметры (ID)
+
+Маршрут с динамическим параметром для отображения деталей пользователя:
+
+```javascript
+// router/index.js
+{
+  path: '/users/:id',
+  name: 'UserDetail',
+  component: UserDetailPage,
+  meta: { requiresAuth: true, permissions: ['users.view'] }
+}
+```
+
+Использование в компоненте:
+
+```vue
+<!-- Переход по ссылке -->
+<router-link :to="`/users/${user.id}`">Просмотр</router-link>
+
+<!-- Получение параметра в компоненте -->
+<script>
+export default {
+  mounted() {
+    const userId = this.$route.params.id;
+    this.loadUser(userId);
+  },
+  watch: {
+    '$route.params.id'() {
+      // Реагируем на изменение ID
+      this.loadUser(this.$route.params.id);
+    }
+  }
+}
+</script>
+```
+
+### Вложенные маршруты
+
+Структура с общим layout и дочерними маршрутами:
+
+```javascript
+// router/index.js
+{
+  path: '/profile',
+  component: ProfilePage, // Родительский компонент с sidebar
+  meta: { requiresAuth: true },
+  children: [
+    { path: '', name: 'ProfileOverview', component: ProfileOverview },
+    { path: 'settings', name: 'ProfileSettings', component: ProfileSettings },
+    { path: 'activity', name: 'ProfileActivity', component: ProfileActivity },
+    { path: 'security', name: 'ProfileSecurity', component: ProfileSecurity }
+  ]
+}
+```
+
+Родительский компонент с `<router-view>`:
+
+```vue
+<!-- ProfilePage.vue -->
+<template>
+  <div class="container">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-md-3">
+        <nav class="nav flex-column">
+          <router-link to="/profile">Обзор</router-link>
+          <router-link to="/profile/settings">Настройки</router-link>
+          <router-link to="/profile/activity">Активность</router-link>
+          <router-link to="/profile/security">Безопасность</router-link>
+        </nav>
+      </div>
+      
+      <!-- Content area -->
+      <div class="col-md-9">
+        <router-view></router-view> <!-- Дочерние маршруты рендерятся здесь -->
+      </div>
+    </div>
+  </div>
+</template>
+```
+
+### Route Guards (защита маршрутов)
+
+```javascript
+router.beforeEach((to, from, next) => {
+  const store = useStore();
+  const isAuthenticated = store.getters.isAuthenticated.value;
+
+  // Проверка авторизации
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    return next({ name: 'Login', query: { redirect: to.fullPath } });
+  }
+
+  // Проверка прав доступа
+  if (to.meta.permissions && to.meta.permissions.length > 0) {
+    if (!store.actions.hasAnyPermission(to.meta.permissions)) {
+      return next({ name: 'Forbidden' });
+    }
+  }
+
+  next();
+});
+```
+
 ## 🎨 Система тем и оформления
 
 ### Темы (Bootstrap data-bs-theme)

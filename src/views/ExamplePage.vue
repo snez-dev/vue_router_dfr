@@ -80,6 +80,61 @@
         </table>
       </div>
     </div>
+
+    <!-- Vue Router примеры -->
+    <div class="card border-0 shadow-sm mt-4">
+      <div class="card-header bg-white">
+        <h5 class="mb-0">7. Vue Router — динамические параметры</h5>
+      </div>
+      <div class="card-body">
+        <p class="text-muted small">Пример маршрута с динамическим параметром ID: <code>/users/:id</code></p>
+        <div class="d-flex flex-wrap gap-2">
+          <router-link to="/users/1" class="btn btn-outline-primary">
+            <i class="fas fa-user me-1"></i>Пользователь #1
+          </router-link>
+          <router-link to="/users/2" class="btn btn-outline-primary">
+            <i class="fas fa-user me-1"></i>Пользователь #2
+          </router-link>
+          <router-link to="/users/3" class="btn btn-outline-primary">
+            <i class="fas fa-user me-1"></i>Пользователь #3
+          </router-link>
+          <router-link to="/users/999" class="btn btn-outline-danger">
+            <i class="fas fa-user-slash me-1"></i>Пользователь #999 (не существует)
+          </router-link>
+        </div>
+        <div class="alert alert-info mt-3 mb-0">
+          <i class="fas fa-info-circle me-2"></i>
+          Текущий маршрут: <code>{{ $route.fullPath }}</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm mt-4">
+      <div class="card-header bg-white">
+        <h5 class="mb-0">8. Vue Router — вложенные маршруты</h5>
+      </div>
+      <div class="card-body">
+        <p class="text-muted small">Пример вложенных маршрутов: <code>/profile</code> с дочерними маршрутами</p>
+        <div class="d-flex flex-wrap gap-2">
+          <router-link to="/profile" class="btn btn-outline-info">
+            <i class="fas fa-home me-1"></i>Обзор
+          </router-link>
+          <router-link to="/profile/settings" class="btn btn-outline-info">
+            <i class="fas fa-cog me-1"></i>Настройки
+          </router-link>
+          <router-link to="/profile/activity" class="btn btn-outline-info">
+            <i class="fas fa-history me-1"></i>Активность
+          </router-link>
+          <router-link to="/profile/security" class="btn btn-outline-info">
+            <i class="fas fa-shield-alt me-1"></i>Безопасность
+          </router-link>
+        </div>
+        <div class="alert alert-info mt-3 mb-0">
+          <i class="fas fa-info-circle me-2"></i>
+          Вложенные маршруты позволяют создавать структуру с общим layout (sidebar) и разным контентом
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 

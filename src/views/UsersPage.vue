@@ -14,13 +14,24 @@
             <tbody>
               <tr v-for="u in users" :key="u.id">
                 <td>{{ u.id }}</td>
-                <td><i class="fas fa-user me-2 text-muted"></i>{{ u.username }}</td>
+                <td>
+                  <router-link :to="`/users/${u.id}`" class="text-decoration-none">
+                    <i class="fas fa-user me-2 text-muted"></i>{{ u.username }}
+                  </router-link>
+                </td>
                 <td>{{ u.email }}</td>
                 <td><span class="badge" :class="roleBadge(u.role)">{{ u.role }}</span></td>
                 <td><span class="badge" :class="u.is_active ? 'bg-success' : 'bg-secondary'">{{ u.is_active ? 'Активен' : 'Неактивен' }}</span></td>
                 <td v-permission="'users.edit'">
-                  <button class="btn btn-sm btn-outline-primary me-1" v-permission="'users.edit'"><i class="fas fa-edit"></i></button>
-                  <button class="btn btn-sm btn-outline-danger" v-permission="'users.delete'"><i class="fas fa-trash"></i></button>
+                  <router-link :to="`/users/${u.id}`" class="btn btn-sm btn-outline-primary me-1">
+                    <i class="fas fa-eye"></i>
+                  </router-link>
+                  <button class="btn btn-sm btn-outline-warning me-1" v-permission="'users.edit'">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger" v-permission="'users.delete'">
+                    <i class="fas fa-trash"></i>
+                  </button>
                 </td>
               </tr>
             </tbody>

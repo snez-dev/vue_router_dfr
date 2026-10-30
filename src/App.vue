@@ -10,27 +10,29 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-              <router-link class="nav-link" to="/"><i class="fas fa-home me-1"></i>Главная</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link" to="/dashboard"><i class="fas fa-tachometer-alt me-1"></i>Панель</router-link>
-            </li>
-            <li class="nav-item" v-permission="'users.view'">
-              <router-link class="nav-link" to="/users"><i class="fas fa-users me-1"></i>Пользователи</router-link>
-            </li>
-            <li class="nav-item" v-permission="'reports.view'">
-              <router-link class="nav-link" to="/reports"><i class="fas fa-chart-bar me-1"></i>Отчёты</router-link>
-            </li>
-            <li class="nav-item" v-permission="'settings.view'">
-              <router-link class="nav-link" to="/settings"><i class="fas fa-cog me-1"></i>Настройки</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link" to="/example"><i class="fas fa-code me-1"></i>Пример</router-link>
-            </li>
-          </ul>
-          <ul class="navbar-nav">
+            <ul class="navbar-nav me-auto">
+              <li class="nav-item">
+                <router-link class="nav-link" to="/"><i class="fas fa-home me-1"></i>Главная</router-link>
+              </li>
+              <li class="nav-item">
+                <router-link class="nav-link" to="/dashboard"><i class="fas fa-tachometer-alt me-1"></i>Панель</router-link>
+              </li>
+              <li class="nav-item" v-permission="'users.view'">
+                <router-link class="nav-link" to="/users"><i class="fas fa-users me-1"></i>Пользователи</router-link>
+              </li>
+              <li class="nav-item" v-permission="'reports.view'">
+                <router-link class="nav-link" to="/reports"><i class="fas fa-chart-bar me-1"></i>Отчёты</router-link>
+              </li>
+              <li class="nav-item">
+                <router-link class="nav-link" to="/profile"><i class="fas fa-user-circle me-1"></i>Профиль</router-link>
+              </li>
+              <li class="nav-item" v-permission="'settings.view'">
+                <router-link class="nav-link" to="/settings"><i class="fas fa-cog me-1"></i>Настройки</router-link>
+              </li>
+              <li class="nav-item">
+                <router-link class="nav-link" to="/example"><i class="fas fa-code me-1"></i>Пример</router-link>
+              </li>
+            </ul>          <ul class="navbar-nav">
             <li class="nav-item dropdown" ref="dropdownRef">
               <a class="nav-link dropdown-toggle" href="#" role="button" @click.prevent="toggleDropdown">
                 <i class="fas fa-user-circle me-1"></i>{{ currentUser.username }}

@@ -54,16 +54,17 @@
         <div class="card border-0 shadow-sm">
           <div class="card-header bg-white"><h5 class="mb-0"><i class="fas fa-bolt me-2 text-warning"></i>Быстрые действия</h5></div>
           <div class="card-body">
-            <div class="d-flex flex-wrap gap-2">
-              <router-link to="/dashboard" class="btn btn-outline-primary"><i class="fas fa-tachometer-alt me-1"></i>Панель</router-link>
-              <router-link to="/users" v-permission="'users.view'" class="btn btn-outline-success"><i class="fas fa-users me-1"></i>Пользователи</router-link>
-              <router-link to="/reports" v-permission="'reports.view'" class="btn btn-outline-warning"><i class="fas fa-chart-bar me-1"></i>Отчёты</router-link>
-              <router-link to="/settings" v-permission="'settings.view'" class="btn btn-outline-secondary"><i class="fas fa-cog me-1"></i>Настройки</router-link>
-              <router-link to="/example" class="btn btn-outline-info"><i class="fas fa-code me-1"></i>Пример директив</router-link>
-              <router-link to="/403" class="btn btn-outline-danger"><i class="fas fa-lock me-1"></i>Тест 403</router-link>
-              <router-link to="/500" class="btn btn-outline-dark"><i class="fas fa-server me-1"></i>Тест 500</router-link>
-            </div>
-          </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <router-link to="/dashboard" class="btn btn-outline-primary"><i class="fas fa-tachometer-alt me-1"></i>Панель</router-link>
+                  <router-link to="/users" v-permission="'users.view'" class="btn btn-outline-success"><i class="fas fa-users me-1"></i>Пользователи</router-link>
+                  <router-link to="/users/1" v-permission="'users.view'" class="btn btn-outline-success"><i class="fas fa-user me-1"></i>Пользователь #1</router-link>
+                  <router-link to="/reports" v-permission="'reports.view'" class="btn btn-outline-warning"><i class="fas fa-chart-bar me-1"></i>Отчёты</router-link>
+                  <router-link to="/profile" class="btn btn-outline-info"><i class="fas fa-user-circle me-1"></i>Профиль (вложенные)</router-link>
+                  <router-link to="/settings" v-permission="'settings.view'" class="btn btn-outline-secondary"><i class="fas fa-cog me-1"></i>Настройки</router-link>
+                  <router-link to="/example" class="btn btn-outline-info"><i class="fas fa-code me-1"></i>Пример директив</router-link>
+                  <router-link to="/403" class="btn btn-outline-danger"><i class="fas fa-lock me-1"></i>Тест 403</router-link>
+                  <router-link to="/500" class="btn btn-outline-dark"><i class="fas fa-server me-1"></i>Тест 500</router-link>
+                </div>          </div>
         </div>
       </div>
     </div>
