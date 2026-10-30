@@ -62,6 +62,7 @@
                   <router-link to="/profile" class="btn btn-outline-info"><i class="fas fa-user-circle me-1"></i>Профиль (вложенные)</router-link>
                   <router-link to="/settings" v-permission="'settings.view'" class="btn btn-outline-secondary"><i class="fas fa-cog me-1"></i>Настройки</router-link>
                   <router-link to="/example" class="btn btn-outline-info"><i class="fas fa-code me-1"></i>Пример директив</router-link>
+                  <router-link to="/router-demo" class="btn btn-outline-dark"><i class="fas fa-route me-1"></i>Пример Router</router-link>
                   <router-link to="/403" class="btn btn-outline-danger"><i class="fas fa-lock me-1"></i>Тест 403</router-link>
                   <router-link to="/500" class="btn btn-outline-dark"><i class="fas fa-server me-1"></i>Тест 500</router-link>
                 </div>          </div>

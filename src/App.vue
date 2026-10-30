@@ -32,6 +32,9 @@
               <li class="nav-item">
                 <router-link class="nav-link" to="/example"><i class="fas fa-code me-1"></i>Пример</router-link>
               </li>
+              <li class="nav-item">
+                <router-link class="nav-link" to="/router-demo"><i class="fas fa-route me-1"></i>Router</router-link>
+              </li>
             </ul>          <ul class="navbar-nav">
             <li class="nav-item dropdown" ref="dropdownRef">
               <a class="nav-link dropdown-toggle" href="#" role="button" @click.prevent="toggleDropdown">

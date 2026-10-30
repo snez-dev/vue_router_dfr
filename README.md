@@ -50,6 +50,16 @@
 │       │   ├── ProfileSettings.vue
 │       │   ├── ProfileActivity.vue
 │       │   └── ProfileSecurity.vue
+│       ├── RouterExamplePage.vue # Примеры Vue Router
+│       ├── demo/                 # Демо компоненты Router
+│       │   ├── UsersListDemo.vue # Список пользователей (демо)
+│       │   ├── UserDetailDemo.vue # Детали пользователя (демо :id)
+│       │   ├── NestedRoutesDemo.vue # Родительский компонент nested
+│       │   └── nested/           # Дочерние компоненты nested
+│       │       ├── Overview.vue
+│       │       ├── Profile.vue
+│       │       ├── Settings.vue
+│       │       └── Activity.vue
 │       ├── ExamplePage.vue       # Пример использования директив
 │       ├── NotFoundPage.vue      # 404
 │       ├── ForbiddenPage.vue     # 403
@@ -102,6 +112,76 @@
     permissions: ['users.view'] // Проверка через beforeEach guard
   }
 }
+```
+
+## 🛣️ Демо Vue Router
+
+Проект включает демонстрацию возможностей Vue Router:
+
+### Динамические параметры (`:id`)
+
+Маршруты с динамическими параметрами позволяют передавать данные через URL.
+
+**Примеры маршрутов:**
+- `/router-demo/users` — список пользователей
+- `/router-demo/users/1` — пользователь с ID=1
+- `/router-demo/users/5` — пользователь с ID=5
+
+**Код:**
+```javascript
+// router/index.js
+{
+  path: '/router-demo/users',
+  component: UsersListDemo
+},
+{
+  path: '/router-demo/users/:id',
+  component: UserDetailDemo
+}
+
+// UserDetailDemo.vue
+computed: {
+  userId() {
+    return this.$route.params.id;
+  }
+}
+```
+
+### Вложенные маршруты (Nested Routes)
+
+Вложенные маршруты позволяют создавать иерархическую структуру URL. Родительский компонент содержит `<router-view>` для отображения дочерних компонентов.
+
+**Примеры маршрутов:**
+- `/router-demo/nested` — обзор
+- `/router-demo/nested/profile` — профиль
+- `/router-demo/nested/settings` — настройки
+- `/router-demo/nested/activity` — активность
+
+**Код:**
+```javascript
+// router/index.js
+{
+  path: '/router-demo/nested',
+  component: NestedRoutesDemo,
+  children: [
+    { path: '', component: Overview },
+    { path: 'profile', component: Profile },
+    { path: 'settings', component: Settings },
+    { path: 'activity', component: Activity }
+  ]
+}
+
+// NestedRoutesDemo.vue
+<template>
+  <div>
+    <!-- Навигация -->
+    <router-link to="/router-demo/nested">Обзор</router-link>
+    <router-link to="/router-demo/nested/profile">Профиль</router-link>
+    
+    <!-- Место для дочерних компонентов -->
+    <router-view></router-view>
+  </div>
+</template>
 ```
 
 ## 👤 Демо-аккаунты
