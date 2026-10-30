@@ -61,18 +61,18 @@
 </template>
 
 <script>
-import { useStore } from '../../store';
+import { useAuthStore } from '../../stores/auth';
 
 export default {
   name: 'ProfileOverview',
   computed: {
     user() {
-      const store = useStore();
-      return store.getters.currentUser.value || {};
+      const authStore = useAuthStore();
+      return authStore.currentUser;
     },
     permissions() {
-      const store = useStore();
-      return store.getters.userPermissions.value || [];
+      const authStore = useAuthStore();
+      return authStore.userPermissions;
     }
   }
 }

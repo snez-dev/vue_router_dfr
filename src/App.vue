@@ -60,8 +60,8 @@
 </template>
 
 <script>
-import { useStore } from './store';
-import { useThemeStore } from './store/theme';
+import { useAuthStore } from './stores/auth';
+import { useThemeStore } from './stores/theme';
 import ThemeSwitcher from './components/ThemeSwitcher.vue';
 
 export default {
@@ -76,16 +76,16 @@ export default {
   },
   computed: {
     isAuthenticated() {
-      const store = useStore();
-      return store.getters.isAuthenticated.value;
+      const authStore = useAuthStore();
+      return authStore.isAuthenticated;
     },
     currentUser() {
-      const store = useStore();
-      return store.getters.currentUser.value || {};
+      const authStore = useAuthStore();
+      return authStore.currentUser;
     },
     navbarColorClass() {
       const themeStore = useThemeStore();
-      return `bg-${themeStore.getters.colorScheme.value}`;
+      return `bg-${themeStore.colorScheme}`;
     }
   },
   methods: {
@@ -93,8 +93,8 @@ export default {
       this.dropdownOpen = !this.dropdownOpen;
     },
     logout() {
-      const store = useStore();
-      store.actions.logout();
+      const authStore = useAuthStore();
+      authStore.logout();
       this.dropdownOpen = false;
       this.$router.push('/login');
     },

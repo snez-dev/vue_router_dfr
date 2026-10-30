@@ -1,21 +1,5 @@
-import { reactive, computed } from 'vue';
-
-// Состояние приложения
-const state = reactive({
-  token: localStorage.getItem('auth_token') || null,
-  user: JSON.parse(localStorage.getItem('auth_user') || 'null'),
-  permissions: JSON.parse(localStorage.getItem('auth_permissions') || '[]'),
-  loading: false,
-  notifications: [],
-});
-
-// Геттеры
-const getters = {
-  isAuthenticated: computed(() => !!state.token && !!state.user),
-  currentUser: computed(() => state.user),
-  userPermissions: computed(() => state.permissions),
-  isLoading: computed(() => state.loading),
-};
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
 
 // Mock API (имитация Django DRF)
 const mockApi = {
@@ -63,16 +47,27 @@ const mockApi = {
   }
 };
 
-// Действия
-const actions = {
-  async login(credentials) {
-    state.loading = true;
+export const useAuthStore = defineStore('auth', () => {
+  // State
+  const token = ref(localStorage.getItem('auth_token') || null);
+  const user = ref(JSON.parse(localStorage.getItem('auth_user') || 'null'));
+  const permissions = ref(JSON.parse(localStorage.getItem('auth_permissions') || '[]'));
+  const loading = ref(false);
+
+  // Getters
+  const isAuthenticated = computed(() => !!token.value && !!user.value);
+  const currentUser = computed(() => user.value || {});
+  const userPermissions = computed(() => permissions.value || []);
+
+  // Actions
+  async function login(credentials) {
+    loading.value = true;
     try {
       const response = await mockApi.login(credentials);
       if (response.success) {
-        state.token = response.token;
-        state.user = response.user;
-        state.permissions = response.permissions;
+        token.value = response.token;
+        user.value = response.user;
+        permissions.value = response.permissions;
         localStorage.setItem('auth_token', response.token);
         localStorage.setItem('auth_user', JSON.stringify(response.user));
         localStorage.setItem('auth_permissions', JSON.stringify(response.permissions));
@@ -82,41 +77,50 @@ const actions = {
     } catch (error) {
       return { success: false, error: 'Ошибка сервера' };
     } finally {
-      state.loading = false;
+      loading.value = false;
     }
-  },
-  logout() {
-    state.token = null;
-    state.user = null;
-    state.permissions = [];
+  }
+
+  function logout() {
+    token.value = null;
+    user.value = null;
+    permissions.value = [];
     localStorage.removeItem('auth_token');
     localStorage.removeItem('auth_user');
     localStorage.removeItem('auth_permissions');
-  },
-  hasPermission(permission) {
-    if (!state.permissions || state.permissions.length === 0) return false;
-    if (state.permissions.includes('*')) return true;
-    return state.permissions.includes(permission);
-  },
-  hasAnyPermission(permissions) {
-    return permissions.some(p => actions.hasPermission(p));
-  },
-  hasAllPermissions(permissions) {
-    return permissions.every(p => actions.hasPermission(p));
-  },
-  addNotification(message, type = 'info') {
-    const id = Date.now();
-    state.notifications.push({ id, message, type });
-    setTimeout(() => { state.notifications = state.notifications.filter(n => n.id !== id); }, 5000);
-  },
-  removeNotification(id) {
-    state.notifications = state.notifications.filter(n => n.id !== id);
-  },
-};
+  }
 
-export const useStore = () => ({
-  state,
-  getters,
-  actions,
-  mockApi,
+  function hasPermission(permission) {
+    if (!permissions.value || permissions.value.length === 0) return false;
+    if (permissions.value.includes('*')) return true;
+    return permissions.value.includes(permission);
+  }
+
+  function hasAnyPermission(perms) {
+    return perms.some(p => hasPermission(p));
+  }
+
+  function hasAllPermissions(perms) {
+    return perms.every(p => hasPermission(p));
+  }
+
+  return {
+    // State
+    token,
+    user,
+    permissions,
+    loading,
+    // Getters
+    isAuthenticated,
+    currentUser,
+    userPermissions,
+    // Actions
+    login,
+    logout,
+    hasPermission,
+    hasAnyPermission,
+    hasAllPermissions,
+    // Mock API
+    mockApi
+  };
 });

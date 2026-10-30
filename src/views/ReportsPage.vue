@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { useStore } from '../store';
+import { useAuthStore } from '../stores/auth';
 
 export default {
   name: 'ReportsPage',
@@ -34,8 +34,8 @@ export default {
     return { reports: [] };
   },
   async mounted() {
-    const store = useStore();
-    this.reports = await store.mockApi.getReports();
+    const authStore = useAuthStore();
+    this.reports = await authStore.mockApi.getReports();
   },
   methods: {
     statusBadge(s) {

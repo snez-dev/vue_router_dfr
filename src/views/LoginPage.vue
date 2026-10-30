@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import { useStore } from '../store';
+import { useAuthStore } from '../stores/auth';
 
 export default {
   name: 'LoginPage',
@@ -72,10 +72,10 @@ export default {
   },
   methods: {
     async handleLogin() {
-      const store = useStore();
+      const authStore = useAuthStore();
       this.error = '';
       this.loading = true;
-      const result = await store.actions.login(this.form);
+      const result = await authStore.login(this.form);
       if (result.success) {
         this.$router.push(this.$route.query.redirect || '/');
       } else {

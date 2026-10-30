@@ -5,7 +5,7 @@
 ## 🚀 Технологии
 
 - **Frontend:** Vue.js 3 + Vue Router 4
-- **State Management:** Собственный store (reactive + computed)
+- **State Management:** Pinia (официальный store для Vue.js)
 - **CSS Framework:** Bootstrap 5.3 (с встроенной поддержкой тем через data-bs-theme)
 - **Icons:** Font Awesome 6
 - **Build Tool:** Vite
@@ -18,23 +18,33 @@
 ├── vite.config.js                # Конфигурация Vite + Vue
 ├── package.json                  # Зависимости
 ├── src/
-│   ├── main.js                   # Инициализация Vue приложения
+│   ├── main.js                   # Инициализация Vue приложения + Pinia
 │   ├── App.vue                   # Корневой компонент (navbar + router-view)
 │   ├── assets/
 │   │   └── styles.css            # Глобальные стили
-│   ├── store/
-│   │   └── index.js              # Собственный store (state, getters, actions)
+│   ├── stores/                   # Pinia stores
+│   │   ├── auth.js               # Auth store (авторизация, права)
+│   │   └── theme.js              # Theme store (тема, цветовая схема)
 │   ├── plugins/
 │   │   └── permission.js         # Плагин директив управления доступом
 │   ├── router/
 │   │   └── index.js              # Vue Router конфигурация + guards
+│   ├── components/
+│   │   └── ThemeSwitcher.vue     # Переключатель темы
 │   └── views/                    # Компоненты страниц (.vue)
 │       ├── LoginPage.vue         # Авторизация
 │       ├── HomePage.vue          # Главная
 │       ├── DashboardPage.vue     # Панель управления
 │       ├── UsersPage.vue         # Пользователи
+│       ├── UserDetailPage.vue    # Детали пользователя (динамический ID)
 │       ├── ReportsPage.vue       # Отчёты
 │       ├── SettingsPage.vue      # Настройки
+│       ├── ProfilePage.vue       # Профиль (родительский компонент)
+│       ├── profile/              # Вложенные маршруты
+│       │   ├── ProfileOverview.vue
+│       │   ├── ProfileSettings.vue
+│       │   ├── ProfileActivity.vue
+│       │   └── ProfileSecurity.vue
 │       ├── ExamplePage.vue       # Пример использования директив
 │       ├── NotFoundPage.vue      # 404
 │       ├── ForbiddenPage.vue     # 403
@@ -113,25 +123,146 @@ npm run build
 npm run preview
 ```
 
-## 📦 Store (собственный, без Pinia)
+## 📦 Pinia Store
+
+### Auth Store (`src/stores/auth.js`)
 
 ```javascript
-// Структура store
-export const useStore = () => ({
-  state: reactive({
-    token, user, permissions, loading, notifications
-  }),
-  getters: {
-    isAuthenticated, currentUser, userPermissions, isLoading
-  },
-  actions: {
-    login(), logout(),
-    hasPermission(), hasAnyPermission(), hasAllPermissions(),
-    addNotification(), removeNotification()
-  },
-  mockApi: {
-    login(), getUsers(), getReports()
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
+
+export const useAuthStore = defineStore('auth', () => {
+  // State (reactive refs)
+  const token = ref(localStorage.getItem('auth_token') || null);
+  const user = ref(JSON.parse(localStorage.getItem('auth_user') || 'null'));
+  const permissions = ref(JSON.parse(localStorage.getItem('auth_permissions') || '[]'));
+  const loading = ref(false);
+
+  // Getters (computed)
+  const isAuthenticated = computed(() => !!token.value && !!user.value);
+  const currentUser = computed(() => user.value || {});
+  const userPermissions = computed(() => permissions.value || []);
+
+  // Actions (functions)
+  async function login(credentials) {
+    loading.value = true;
+    try {
+      const response = await mockApi.login(credentials);
+      if (response.success) {
+        token.value = response.token;
+        user.value = response.user;
+        permissions.value = response.permissions;
+        // Сохраняем в localStorage
+        localStorage.setItem('auth_token', response.token);
+        localStorage.setItem('auth_user', JSON.stringify(response.user));
+        localStorage.setItem('auth_permissions', JSON.stringify(response.permissions));
+        return { success: true };
+      }
+      return { success: false, error: response.error };
+    } finally {
+      loading.value = false;
+    }
   }
+
+  function logout() {
+    token.value = null;
+    user.value = null;
+    permissions.value = [];
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('auth_user');
+    localStorage.removeItem('auth_permissions');
+  }
+
+  function hasPermission(permission) {
+    if (!permissions.value || permissions.value.length === 0) return false;
+    if (permissions.value.includes('*')) return true;
+    return permissions.value.includes(permission);
+  }
+
+  function hasAnyPermission(perms) {
+    return perms.some(p => hasPermission(p));
+  }
+
+  function hasAllPermissions(perms) {
+    return perms.every(p => hasPermission(p));
+  }
+
+  return {
+    // State
+    token, user, permissions, loading,
+    // Getters
+    isAuthenticated, currentUser, userPermissions,
+    // Actions
+    login, logout, hasPermission, hasAnyPermission, hasAllPermissions,
+    // Mock API
+    mockApi
+  };
+});
+```
+
+### Использование в компонентах
+
+```vue
+<script>
+import { useAuthStore } from '../stores/auth';
+
+export default {
+  computed: {
+    user() {
+      const authStore = useAuthStore();
+      return authStore.currentUser;
+    },
+    permissions() {
+      const authStore = useAuthStore();
+      return authStore.userPermissions;
+    }
+  },
+  methods: {
+    async handleLogin() {
+      const authStore = useAuthStore();
+      const result = await authStore.login(this.form);
+      if (result.success) {
+        this.$router.push('/');
+      }
+    }
+  }
+}
+</script>
+```
+
+### Theme Store (`src/stores/theme.js`)
+
+```javascript
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
+
+export const useThemeStore = defineStore('theme', () => {
+  const theme = ref(localStorage.getItem('app_theme') || 'light');
+  const colorScheme = ref(localStorage.getItem('app_color_scheme') || 'primary');
+
+  const currentTheme = computed(() => {
+    if (theme.value === 'auto') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    return theme.value;
+  });
+
+  function setTheme(newTheme) {
+    theme.value = newTheme;
+    localStorage.setItem('app_theme', newTheme);
+    applyTheme();
+  }
+
+  function setColorScheme(scheme) {
+    colorScheme.value = scheme;
+    localStorage.setItem('app_color_scheme', scheme);
+    applyTheme();
+  }
+
+  return {
+    theme, colorScheme, currentTheme,
+    setTheme, setColorScheme
+  };
 });
 ```
 
@@ -284,6 +415,38 @@ const currentTheme = themeStore.getters.currentTheme.value;
   <h5 class="text-primary">Заголовок</h5>
   <p class="text-body-secondary">Текст</p>
 </div>
+```
+
+## 🗄️ Pinia vs Собственный Store
+
+### Преимущества Pinia:
+- ✅ Официальный store для Vue.js (рекомендуется командой Vue)
+- ✅ Полная поддержка TypeScript
+- ✅ DevTools интеграция (отладка состояния)
+- ✅ Модульная архитектура (можно создавать несколько stores)
+- ✅ Автоматическая реактивность
+- ✅ Поддержка SSR (Server-Side Rendering)
+- ✅ Плагины и middleware
+
+### Когда использовать собственный store:
+- Простые приложения без сложного состояния
+- Нет необходимости в DevTools
+- Минимальный размер бандла критичен
+- Нет потребности в TypeScript
+
+### Инициализация Pinia
+
+```javascript
+// main.js
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import App from './App.vue';
+
+const app = createApp(App);
+const pinia = createPinia();
+
+app.use(pinia);
+app.mount('#app');
 ```
 
 ## 🎯 Django DRF Backend (рекомендуемая структура)

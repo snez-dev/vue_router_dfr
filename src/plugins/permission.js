@@ -1,4 +1,4 @@
-import { useStore } from '../store';
+import { useAuthStore } from '../stores/auth';
 
 /**
  * Плагин управления правами доступа
@@ -14,39 +14,39 @@ import { useStore } from '../store';
  */
 export const PermissionPlugin = {
   install(app) {
-    const store = useStore();
+    const authStore = useAuthStore();
 
     // v-permission directive
     app.directive('permission', {
       mounted(el, binding) {
-        checkPermission(el, binding, store);
+        checkPermission(el, binding, authStore);
       },
       updated(el, binding) {
-        checkPermission(el, binding, store);
+        checkPermission(el, binding, authStore);
       }
     });
 
     // v-permission-disable directive
     app.directive('permission-disable', {
       mounted(el, binding) {
-        checkDisable(el, binding, store);
+        checkDisable(el, binding, authStore);
       },
       updated(el, binding) {
-        checkDisable(el, binding, store);
+        checkDisable(el, binding, authStore);
       }
     });
 
     // Global methods
     app.config.globalProperties.$can = function (permission) {
-      return store.actions.hasPermission(permission);
+      return authStore.hasPermission(permission);
     };
 
     app.config.globalProperties.$canAny = function (permissions) {
-      return store.actions.hasAnyPermission(permissions);
+      return authStore.hasAnyPermission(permissions);
     };
 
     app.config.globalProperties.$canAll = function (permissions) {
-      return store.actions.hasAllPermissions(permissions);
+      return authStore.hasAllPermissions(permissions);
     };
   }
 };
@@ -62,9 +62,9 @@ function parseBinding(binding) {
   return { type: 'any', permissions: [] };
 }
 
-function hasRequiredPermission(parsed, store) {
-  if (parsed.type === 'all') return store.actions.hasAllPermissions(parsed.permissions);
-  return store.actions.hasAnyPermission(parsed.permissions);
+function hasRequiredPermission(parsed, authStore) {
+  if (parsed.type === 'all') return authStore.hasAllPermissions(parsed.permissions);
+  return authStore.hasAnyPermission(parsed.permissions);
 }
 
 function checkPermission(el, binding, store) {

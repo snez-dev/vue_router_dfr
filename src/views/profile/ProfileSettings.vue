@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { useStore } from '../../store';
+import { useAuthStore } from '../../stores/auth';
 
 export default {
   name: 'ProfileSettings',
@@ -59,8 +59,8 @@ export default {
     };
   },
   mounted() {
-    const store = useStore();
-    const user = store.getters.currentUser.value || {};
+    const authStore = useAuthStore();
+    const user = authStore.currentUser;
     this.form.full_name = user.full_name || '';
     this.form.email = user.email || '';
   },

@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import { useStore } from '../store';
+import { useAuthStore } from '../stores/auth';
 
 export default {
   name: 'UserDetailPage',
@@ -114,8 +114,8 @@ export default {
   },
   methods: {
     async loadUser() {
-      const store = useStore();
-      const users = await store.mockApi.getUsers();
+      const authStore = useAuthStore();
+      const users = await authStore.mockApi.getUsers();
       const userId = parseInt(this.$route.params.id);
       this.user = users.find(u => u.id === userId) || null;
     },

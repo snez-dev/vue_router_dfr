@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
-import { useStore } from '../store';
+import { useAuthStore } from '../stores/auth';
 
 // Импорт компонентов страниц
 import LoginPage from '../views/LoginPage.vue';
@@ -51,8 +51,8 @@ const router = createRouter({
 
 // Route Guards
 router.beforeEach((to, from, next) => {
-  const store = useStore();
-  const isAuthenticated = store.getters.isAuthenticated.value;
+  const authStore = useAuthStore();
+  const isAuthenticated = authStore.isAuthenticated;
 
   // Требуется авторизация
   if (to.meta.requiresAuth && !isAuthenticated) {
@@ -66,7 +66,7 @@ router.beforeEach((to, from, next) => {
 
   // Проверка прав доступа
   if (to.meta.permissions && to.meta.permissions.length > 0) {
-    if (!store.actions.hasAnyPermission(to.meta.permissions)) {
+    if (!authStore.hasAnyPermission(to.meta.permissions)) {
       return next({ name: 'Forbidden' });
     }
   }

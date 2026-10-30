@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import { useThemeStore } from '../store/theme';
+import { useThemeStore } from '../stores/theme';
 
 export default {
   name: 'ThemeSwitcher',
@@ -86,26 +86,27 @@ export default {
   },
   computed: {
     theme() {
-      const store = useThemeStore();
-      return store.getters.theme.value;
+      const themeStore = useThemeStore();
+      return themeStore.theme;
     },
     colorScheme() {
-      const store = useThemeStore();
-      return store.getters.colorScheme.value;
+      const themeStore = useThemeStore();
+      return themeStore.colorScheme;
     },
     themeIcon() {
-      const currentTheme = useThemeStore().getters.currentTheme.value;
+      const themeStore = useThemeStore();
+      const currentTheme = themeStore.currentTheme;
       return currentTheme === 'dark' ? 'fas fa-moon text-info' : 'fas fa-sun text-warning';
     }
   },
   methods: {
     setTheme(theme) {
-      const store = useThemeStore();
-      store.actions.setTheme(theme);
+      const themeStore = useThemeStore();
+      themeStore.setTheme(theme);
     },
     setColorScheme(scheme) {
-      const store = useThemeStore();
-      store.actions.setColorScheme(scheme);
+      const themeStore = useThemeStore();
+      themeStore.setColorScheme(scheme);
     },
     togglePanel() {
       this.panelOpen = !this.panelOpen;

@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { useStore } from '../store';
+import { useAuthStore } from '../stores/auth';
 
 export default {
   name: 'UsersPage',
@@ -51,8 +51,8 @@ export default {
     return { users: [] };
   },
   async mounted() {
-    const store = useStore();
-    this.users = await store.mockApi.getUsers();
+    const authStore = useAuthStore();
+    this.users = await authStore.mockApi.getUsers();
   },
   methods: {
     roleBadge(role) {

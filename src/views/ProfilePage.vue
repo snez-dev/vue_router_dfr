@@ -60,14 +60,14 @@
 </template>
 
 <script>
-import { useStore } from '../store';
+import { useAuthStore } from '../stores/auth';
 
 export default {
   name: 'ProfilePage',
   computed: {
     user() {
-      const store = useStore();
-      return store.getters.currentUser.value || {};
+      const authStore = useAuthStore();
+      return authStore.currentUser;
     }
   }
 }
