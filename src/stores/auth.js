@@ -53,11 +53,13 @@ export const useAuthStore = defineStore('auth', () => {
   const user = ref(JSON.parse(localStorage.getItem('auth_user') || 'null'));
   const permissions = ref(JSON.parse(localStorage.getItem('auth_permissions') || '[]'));
   const loading = ref(false);
+  const notifications = ref([]);
 
   // Getters
   const isAuthenticated = computed(() => !!token.value && !!user.value);
   const currentUser = computed(() => user.value || {});
   const userPermissions = computed(() => permissions.value || []);
+  const isLoading = computed(() => loading.value);
 
   // Actions
   async function login(credentials) {
@@ -104,22 +106,38 @@ export const useAuthStore = defineStore('auth', () => {
     return perms.every(p => hasPermission(p));
   }
 
+  function addNotification(message, type = 'info') {
+    const id = Date.now();
+    notifications.value.push({ id, message, type });
+    setTimeout(() => {
+      notifications.value = notifications.value.filter(n => n.id !== id);
+    }, 5000);
+  }
+
+  function removeNotification(id) {
+    notifications.value = notifications.value.filter(n => n.id !== id);
+  }
+
   return {
     // State
     token,
     user,
     permissions,
     loading,
+    notifications,
     // Getters
     isAuthenticated,
     currentUser,
     userPermissions,
+    isLoading,
     // Actions
     login,
     logout,
     hasPermission,
     hasAnyPermission,
     hasAllPermissions,
+    addNotification,
+    removeNotification,
     // Mock API
     mockApi
   };

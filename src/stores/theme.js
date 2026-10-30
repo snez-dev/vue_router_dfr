@@ -29,21 +29,25 @@ export const useThemeStore = defineStore('theme', () => {
 
   function applyTheme() {
     const html = document.documentElement;
-    const current = currentTheme.value;
+    const currentThemeValue = currentTheme.value;
     
     // Применяем Bootstrap тему через data-bs-theme
-    html.setAttribute('data-bs-theme', current);
+    html.setAttribute('data-bs-theme', currentThemeValue);
     
     // Применяем цветовую схему к navbar
     const navbar = document.querySelector('.navbar');
     if (navbar) {
+      // Убираем все Bootstrap цветовые классы
       const colorClasses = ['bg-primary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-dark', 'bg-secondary'];
       colorClasses.forEach(cls => navbar.classList.remove(cls));
+      
+      // Добавляем выбранный цвет
       navbar.classList.add(`bg-${colorScheme.value}`);
     }
   }
 
   function init() {
+    // Применяем тему при инициализации
     applyTheme();
     
     // Слушаем изменения системной темы
