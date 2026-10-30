@@ -17,14 +17,10 @@
 ├── index.html                    # Точка входа
 ├── vite.config.js                # Конфигурация Vite + Vue
 ├── package.json                  # Зависимости (pinia -> file:./local_data/pinia)
-├── .npmrc                        # Настройка npm кэша в local_data
 ├── scripts/
 │   └── copy-pinia.js             # Скрипт копирования Pinia в local_data
-├── local_data/                   # Локальные копии пакетов
+├── local_data/                   # Локальная копия Pinia
 │   ├── pinia/                    # Pinia (используется npm)
-│   ├── nostics/                  # Зависимость Pinia
-│   ├── @vue/devtools-api/        # Зависимость Pinia
-│   ├── .pinia-backup/            # Backup оригинала
 │   └── README.md                 # Документация local_data
 ├── src/
 │   ├── main.js                   # Инициализация Vue приложения + Pinia
@@ -119,54 +115,66 @@
 ## 🛠 Запуск
 
 ```bash
-# 1. Установка зависимостей из npm registry
+# 1. Установка зависимостей
 npm install
 
-# 2. Копирование Pinia в local_data (опционально)
-node scripts/copy-pinia.js
-
-# 3. Development server
+# 2. Development server
 npm run dev
 
-# 4. Production build
+# 3. Production build
 npm run build
 
-# 5. Preview production build
+# 4. Preview production build
 npm run preview
 ```
 
 ## 📦 Локальное хранение Pinia (local_data)
 
-Проект настроен для использования локальной копии Pinia из папки `local_data/` вместо стандартного `node_modules/`.
-
-### Как это работает
-
-1. **package.json** содержит `"pinia": "file:./local_data/pinia"`
-2. При `npm install` npm создаёт symlink: `node_modules/pinia → local_data/pinia`
-3. Все импорты работают как обычно, но физически файлы в `local_data/`
+Проект настроен для использования локальной копии Pinia из папки `local_data/pinia/`.
 
 ### Первоначальная настройка
 
 ```bash
-# Установить зависимости
+# 1. Установить зависимости из npm registry
 npm install
 
-# Скопировать Pinia в local_data
-node scripts/copy-pinia.js
+# 2. Скопировать Pinia в local_data
+npm run copy-pinia
 ```
 
-### Преимущества
+### Как это работает
 
-- ✅ Контроль версий — Pinia хранится в проекте
-- ✅ Оффлайн работа — не нужен интернет для установки
-- ✅ Быстрая установка — npm берёт из локальной копии
-- ✅ Изоляция — изменения не влияют на другие проекты
+1. Скрипт `scripts/copy-pinia.js` копирует Pinia из `node_modules/pinia` в `local_data/pinia`
+2. Обновляет `package.json`: `"pinia": "file:./local_data/pinia"`
+3. Переустанавливает зависимости — npm создаёт symlink
 
 ### Проверка
 
 ```bash
 npm list pinia
 # Должно показать: pinia@4.1.0 -> ./local_data/pinia
+```
+
+### Обновление Pinia
+
+```bash
+# Установить новую версию из npm
+npm install pinia@latest
+
+# Скопировать в local_data
+npm run copy-pinia
+```
+
+### Откат к стандартной установке
+
+Если нужно убрать локальное хранение:
+
+```bash
+# Удалить local_data/pinia
+rm -rf local_data/pinia
+
+# Переустановить из npm registry
+npm install pinia@4.1.0
 ```
 
 Подробнее см. [local_data/README.md](./local_data/README.md)

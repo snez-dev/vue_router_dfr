@@ -1,7 +1,7 @@
 {
   "name": "pinia",
   "version": "4.1.0",
-  "description": "Pinia - локальная копия в local_data",
+  "description": "Pinia - локальная копия для проекта. Запустите: npm run copy-pinia",
   "type": "module",
   "main": "./dist/pinia.js",
   "exports": {

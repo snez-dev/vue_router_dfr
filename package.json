@@ -5,11 +5,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "copy-pinia": "node scripts/copy-pinia.js"
   },
   "dependencies": {
     "@vitejs/plugin-vue": "^6.0.10",
-    "pinia": "file:./local_data/pinia",
+    "pinia": "^4.1.0",
     "vue": "^3.5.0",
     "vue-router": "^4.5.0"
   },

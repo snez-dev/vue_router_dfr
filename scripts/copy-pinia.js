@@ -7,14 +7,12 @@
  *   node scripts/copy-pinia.js
  * 
  * Этот скрипт:
- * 1. Создаёт backup оригинальной pinia
- * 2. Копирует pinia из node_modules/pinia в local_data/pinia
- * 3. Копирует зависимости (nostics, @vue/devtools-api)
- * 4. Обновляет package.json для использования локальной pinia
- * 5. Переустанавливает зависимости
+ * 1. Копирует все файлы pinia из node_modules в local_data/pinia
+ * 2. Обновляет package.json для использования локальной копии
+ * 3. Переустанавливает зависимости
  */
 
-import { cpSync, existsSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'fs';
+import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync, readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
@@ -25,70 +23,44 @@ const rootDir = join(__dirname, '..');
 
 console.log('📦 Копирование Pinia в local_data...\n');
 
-// Создаём директорию local_data если её нет
 const localDataDir = join(rootDir, 'local_data');
+const piniaSrc = join(rootDir, 'node_modules', 'pinia');
+const piniaDest = join(localDataDir, 'pinia');
+
+// Проверяем наличие исходной pinia
+if (!existsSync(piniaSrc)) {
+  console.error('❌ pinia не найдена в node_modules.');
+  console.error('💡 Сначала установите pinia: npm install pinia@4.1.0');
+  process.exit(1);
+}
+
+// Создаём local_data если нет
 if (!existsSync(localDataDir)) {
   mkdirSync(localDataDir, { recursive: true });
 }
 
-// Создаём backup оригинальной pinia
-const piniaSrc = join(rootDir, 'node_modules', 'pinia');
-const piniaBackup = join(rootDir, 'local_data', '.pinia-backup');
-
-if (existsSync(piniaSrc) && !existsSync(piniaBackup)) {
-  console.log('💾 Создание backup оригинальной pinia...');
-  cpSync(piniaSrc, piniaBackup, { recursive: true });
-  console.log('✅ Backup создан в local_data/.pinia-backup/\n');
-}
-
-// Удаляем старую локальную pinia если есть
-const piniaDest = join(localDataDir, 'pinia');
+// Удаляем старую копию
 if (existsSync(piniaDest)) {
-  console.log('🗑️  Удаление старой локальной pinia...');
+  console.log('🗑️  Удаление старой копии...');
   rmSync(piniaDest, { recursive: true, force: true });
 }
 
-// Копируем pinia из backup или node_modules
-const sourceDir = existsSync(piniaBackup) ? piniaBackup : piniaSrc;
+// Копируем pinia
+console.log('📋 Копирование pinia из node_modules...');
+cpSync(piniaSrc, piniaDest, { recursive: true });
+console.log('✅ pinia скопирована в local_data/pinia/\n');
 
-if (existsSync(sourceDir)) {
-  console.log('📋 Копирование pinia...');
-  cpSync(sourceDir, piniaDest, { recursive: true });
-  console.log('✅ pinia скопирована в local_data/pinia/\n');
-} else {
-  console.error('❌ pinia не найдена. Сначала выполните: npm install pinia');
-  process.exit(1);
-}
-
-// Копируем зависимости pinia
-const deps = ['nostics', '@vue/devtools-api'];
-for (const dep of deps) {
-  const depSrc = join(rootDir, 'node_modules', dep);
-  const depDest = join(localDataDir, dep);
-  
-  if (existsSync(depSrc)) {
-    console.log(`📋 Копирование ${dep}...`);
-    if (existsSync(depDest)) {
-      rmSync(depDest, { recursive: true, force: true });
-    }
-    cpSync(depSrc, depDest, { recursive: true });
-    console.log(`✅ ${dep} скопирован в local_data/${dep}/\n`);
-  } else {
-    console.log(`⚠️  ${dep} не найден, пропускаем\n`);
-  }
-}
-
-// Обновляем package.json проекта
+// Обновляем package.json
 const packageJsonPath = join(rootDir, 'package.json');
 const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
 
-// Меняем pinia на file:./local_data/pinia
 if (packageJson.dependencies) {
   packageJson.dependencies.pinia = 'file:./local_data/pinia';
   writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2) + '\n');
   console.log('✅ package.json обновлён: pinia -> file:./local_data/pinia\n');
 }
 
+// Переустанавливаем зависимости
 console.log('🔄 Переустановка зависимостей...');
 try {
   execSync('npm install', { cwd: rootDir, stdio: 'inherit' });
@@ -101,8 +73,6 @@ try {
 console.log('🎉 Готово!');
 console.log('\n📁 Структура:');
 console.log('  local_data/');
-console.log('  ├── pinia/              ← Pinia (используется npm)');
-console.log('  ├── nostics/            ← Зависимость Pinia');
-console.log('  ├── @vue/devtools-api/  ← Зависимость Pinia');
-console.log('  └── .pinia-backup/      ← Backup оригинала');
+console.log('  └── pinia/    ← Полная копия Pinia');
 console.log('\n💡 Теперь npm берёт Pinia из local_data/pinia/');
+console.log('\n✅ Проект готов к работе: npm run build');
