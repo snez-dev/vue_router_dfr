@@ -16,7 +16,16 @@
 ```
 ├── index.html                    # Точка входа
 ├── vite.config.js                # Конфигурация Vite + Vue
-├── package.json                  # Зависимости
+├── package.json                  # Зависимости (pinia -> file:./local_data/pinia)
+├── .npmrc                        # Настройка npm кэша в local_data
+├── scripts/
+│   └── copy-pinia.js             # Скрипт копирования Pinia в local_data
+├── local_data/                   # Локальные копии пакетов
+│   ├── pinia/                    # Pinia (используется npm)
+│   ├── nostics/                  # Зависимость Pinia
+│   ├── @vue/devtools-api/        # Зависимость Pinia
+│   ├── .pinia-backup/            # Backup оригинала
+│   └── README.md                 # Документация local_data
 ├── src/
 │   ├── main.js                   # Инициализация Vue приложения + Pinia
 │   ├── App.vue                   # Корневой компонент (navbar + router-view)
@@ -110,18 +119,57 @@
 ## 🛠 Запуск
 
 ```bash
-# Установка зависимостей
+# 1. Установка зависимостей из npm registry
 npm install
 
-# Development server
+# 2. Копирование Pinia в local_data (опционально)
+node scripts/copy-pinia.js
+
+# 3. Development server
 npm run dev
 
-# Production build
+# 4. Production build
 npm run build
 
-# Preview production build
+# 5. Preview production build
 npm run preview
 ```
+
+## 📦 Локальное хранение Pinia (local_data)
+
+Проект настроен для использования локальной копии Pinia из папки `local_data/` вместо стандартного `node_modules/`.
+
+### Как это работает
+
+1. **package.json** содержит `"pinia": "file:./local_data/pinia"`
+2. При `npm install` npm создаёт symlink: `node_modules/pinia → local_data/pinia`
+3. Все импорты работают как обычно, но физически файлы в `local_data/`
+
+### Первоначальная настройка
+
+```bash
+# Установить зависимости
+npm install
+
+# Скопировать Pinia в local_data
+node scripts/copy-pinia.js
+```
+
+### Преимущества
+
+- ✅ Контроль версий — Pinia хранится в проекте
+- ✅ Оффлайн работа — не нужен интернет для установки
+- ✅ Быстрая установка — npm берёт из локальной копии
+- ✅ Изоляция — изменения не влияют на другие проекты
+
+### Проверка
+
+```bash
+npm list pinia
+# Должно показать: pinia@4.1.0 -> ./local_data/pinia
+```
+
+Подробнее см. [local_data/README.md](./local_data/README.md)
 
 ## 📦 Pinia Store
 

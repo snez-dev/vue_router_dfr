@@ -1,0 +1,19 @@
+{
+  "name": "pinia",
+  "version": "4.1.0",
+  "description": "Pinia - локальная копия в local_data",
+  "type": "module",
+  "main": "./dist/pinia.js",
+  "exports": {
+    ".": "./dist/pinia.js",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "nostics": "^1.2.0"
+  },
+  "peerDependencies": {
+    "@vue/devtools-api": "^8.2.1",
+    "vue": "^3.5.11"
+  },
+  "license": "MIT"
+}
