@@ -1,55 +1,11 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-
-// Mock API (имитация Django DRF)
-const mockApi = {
-  users: {
-    admin: {
-      username: 'admin', password: 'admin123',
-      user: { id: 1, username: 'admin', email: 'admin@example.com', role: 'admin', full_name: 'Администратор' },
-      permissions: ['*']
-    },
-    manager: {
-      username: 'manager', password: 'manager123',
-      user: { id: 2, username: 'manager', email: 'manager@example.com', role: 'manager', full_name: 'Менеджер' },
-      permissions: ['users.view', 'users.edit', 'reports.view', 'reports.create', 'dashboard.view']
-    },
-    user: {
-      username: 'user', password: 'user123',
-      user: { id: 3, username: 'user', email: 'user@example.com', role: 'user', full_name: 'Пользователь' },
-      permissions: ['dashboard.view']
-    }
-  },
-  async login(credentials) {
-    await new Promise(resolve => setTimeout(resolve, 800));
-    const userData = this.users[credentials.username];
-    if (userData && userData.password === credentials.password) {
-      return { success: true, token: 'mock-jwt-' + credentials.username + '-' + Date.now(), user: userData.user, permissions: userData.permissions };
-    }
-    return { success: false, error: 'Неверное имя пользователя или пароль' };
-  },
-  async getUsers() {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return [
-      { id: 1, username: 'admin', email: 'admin@example.com', role: 'admin', is_active: true },
-      { id: 2, username: 'manager', email: 'manager@example.com', role: 'manager', is_active: true },
-      { id: 3, username: 'user', email: 'user@example.com', role: 'user', is_active: true },
-      { id: 4, username: 'guest', email: 'guest@example.com', role: 'guest', is_active: false },
-    ];
-  },
-  async getReports() {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return [
-      { id: 1, title: 'Отчёт за Q1 2024', date: '2024-03-31', status: 'completed' },
-      { id: 2, title: 'Отчёт за Q2 2024', date: '2024-06-30', status: 'in_progress' },
-      { id: 3, title: 'Годовой отчёт 2024', date: '2024-12-31', status: 'pending' },
-    ];
-  }
-};
+import { authAPI } from '../api/client';
 
 export const useAuthStore = defineStore('auth', () => {
   // State
   const token = ref(localStorage.getItem('auth_token') || null);
+  const refreshToken = ref(localStorage.getItem('auth_refresh_token') || null);
   const user = ref(JSON.parse(localStorage.getItem('auth_user') || 'null'));
   const permissions = ref(JSON.parse(localStorage.getItem('auth_permissions') || '[]'));
   const loading = ref(false);
@@ -65,31 +21,123 @@ export const useAuthStore = defineStore('auth', () => {
   async function login(credentials) {
     loading.value = true;
     try {
-      const response = await mockApi.login(credentials);
+      const response = await authAPI.login(credentials);
+      
       if (response.success) {
         token.value = response.token;
+        refreshToken.value = response.refresh_token;
         user.value = response.user;
         permissions.value = response.permissions;
+        
         localStorage.setItem('auth_token', response.token);
+        localStorage.setItem('auth_refresh_token', response.refresh_token);
         localStorage.setItem('auth_user', JSON.stringify(response.user));
         localStorage.setItem('auth_permissions', JSON.stringify(response.permissions));
+        
         return { success: true };
       }
-      return { success: false, error: response.error };
+      
+      return { success: false, error: response.error || 'Ошибка входа' };
     } catch (error) {
-      return { success: false, error: 'Ошибка сервера' };
+      return { success: false, error: error.message || 'Ошибка сервера' };
     } finally {
       loading.value = false;
     }
   }
 
-  function logout() {
-    token.value = null;
-    user.value = null;
-    permissions.value = [];
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('auth_user');
-    localStorage.removeItem('auth_permissions');
+  async function register(userData) {
+    loading.value = true;
+    try {
+      const response = await authAPI.register(userData);
+      
+      if (response.success) {
+        token.value = response.token;
+        refreshToken.value = response.refresh_token;
+        user.value = response.user;
+        permissions.value = response.permissions;
+        
+        localStorage.setItem('auth_token', response.token);
+        localStorage.setItem('auth_refresh_token', response.refresh_token);
+        localStorage.setItem('auth_user', JSON.stringify(response.user));
+        localStorage.setItem('auth_permissions', JSON.stringify(response.permissions));
+        
+        return { success: true };
+      }
+      
+      return { success: false, error: response.error || 'Ошибка регистрации' };
+    } catch (error) {
+      return { success: false, error: error.message || 'Ошибка сервера' };
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  async function logout() {
+    try {
+      if (refreshToken.value) {
+        await authAPI.logout(refreshToken.value);
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      token.value = null;
+      refreshToken.value = null;
+      user.value = null;
+      permissions.value = [];
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('auth_refresh_token');
+      localStorage.removeItem('auth_user');
+      localStorage.removeItem('auth_permissions');
+    }
+  }
+
+  async function refreshTokenFn() {
+    if (!refreshToken.value) {
+      logout();
+      return;
+    }
+    
+    try {
+      const response = await authAPI.refreshToken(refreshToken.value);
+      token.value = response.access;
+      localStorage.setItem('auth_token', response.access);
+    } catch (error) {
+      logout();
+    }
+  }
+
+  async function getProfile() {
+    try {
+      const response = await authAPI.getProfile();
+      user.value = response;
+      localStorage.setItem('auth_user', JSON.stringify(response));
+      return response;
+    } catch (error) {
+      console.error('Get profile error:', error);
+      throw error;
+    }
+  }
+
+  async function updateProfile(data) {
+    try {
+      const response = await authAPI.updateProfile(data);
+      user.value = response;
+      localStorage.setItem('auth_user', JSON.stringify(response));
+      return response;
+    } catch (error) {
+      console.error('Update profile error:', error);
+      throw error;
+    }
+  }
+
+  async function changePassword(data) {
+    try {
+      const response = await authAPI.changePassword(data);
+      return response;
+    } catch (error) {
+      console.error('Change password error:', error);
+      throw error;
+    }
   }
 
   function hasPermission(permission) {
@@ -121,6 +169,7 @@ export const useAuthStore = defineStore('auth', () => {
   return {
     // State
     token,
+    refreshToken,
     user,
     permissions,
     loading,
@@ -132,13 +181,16 @@ export const useAuthStore = defineStore('auth', () => {
     isLoading,
     // Actions
     login,
+    register,
     logout,
+    refreshToken: refreshTokenFn,
+    getProfile,
+    updateProfile,
+    changePassword,
     hasPermission,
     hasAnyPermission,
     hasAllPermissions,
     addNotification,
     removeNotification,
-    // Mock API
-    mockApi
   };
 });

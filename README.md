@@ -4,12 +4,33 @@
 
 ## 🚀 Технологии
 
-- **Frontend:** Vue.js 3 + Vue Router 4
-- **State Management:** Pinia (официальный store для Vue.js)
+### Frontend
+- **Framework:** Vue.js 3 + Vue Router 4
+- **State Management:** Pinia (официальное решение для Vue 3)
 - **CSS Framework:** Bootstrap 5.3 (с встроенной поддержкой тем через data-bs-theme)
 - **Icons:** Font Awesome 6
 - **Build Tool:** Vite
-- **Backend:** Django REST Framework (имитация через mock API)
+- **API Client:** Fetch API с JWT аутентификацией
+
+### Backend
+- **Framework:** Django 5.0.1
+- **REST API:** Django REST Framework 3.14.0
+- **Authentication:** SimpleJWT (JSON Web Tokens)
+- **CORS:** django-cors-headers
+- **Database:** SQLite (по умолчанию, можно переключить на PostgreSQL)
+
+## 🏗️ Архитектура
+
+```
+┌─────────────────┐         ┌──────────────────┐
+│   Vue.js 3      │  HTTP   │  Django DRF      │
+│   Frontend      │ ←─────→ │  Backend         │
+│                 │  JWT    │                  │
+│  - Pinia        │         │  - JWT Auth      │
+│  - Vue Router   │         │  - RBAC          │
+│  - Bootstrap 5  │         │  - REST API      │
+└─────────────────┘         └──────────────────┘
+```
 
 ## 📁 Структура проекта
 
@@ -194,6 +215,8 @@ computed: {
 
 ## 🛠 Запуск
 
+### Frontend (Vue.js)
+
 ```bash
 # 1. Установка зависимостей
 npm install
@@ -207,6 +230,43 @@ npm run build
 # 4. Preview production build
 npm run preview
 ```
+
+### Backend (Django)
+
+```bash
+# Автоматическая установка (Linux/Mac)
+chmod +x setup-backend.sh
+./setup-backend.sh
+
+# Ручная установка
+cd backend
+python3 -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+```
+
+### Полная инструкция
+
+1. **Запустите backend:**
+   ```bash
+   cd backend
+   source venv/bin/activate
+   python manage.py runserver
+   ```
+   Backend будет доступен на `http://localhost:8000`
+
+2. **Запустите frontend:**
+   ```bash
+   npm run dev
+   ```
+   Frontend будет доступен на `http://localhost:3000`
+
+3. **Войдите в систему:**
+   - Admin: `admin` / `admin123`
+   - Manager: `manager` / `manager123`
+   - User: `user` / `user123`
 
 ## 📦 Локальное хранение Pinia (local_data)
 
